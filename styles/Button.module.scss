@@ -1,0 +1,12 @@
+.RoundedBtn {
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 1em;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.RoundedBtn:active {
+  opacity: 0.9;
+}
