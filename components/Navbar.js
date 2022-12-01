@@ -23,7 +23,7 @@ export default function Navbar() {
           <span style={{ color: "white" }}>Sign in</span>
         </Link>
 
-        <Link href="signup">
+        <Link href="/signup">
           <RoundedButton
             text="Sign up"
             primary="rgb(255, 77, 77)"

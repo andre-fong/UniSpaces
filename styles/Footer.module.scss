@@ -1,0 +1,60 @@
+@import "../styles/variables";
+
+.Footer {
+  display: flex;
+  gap: 25px;
+  background-color: $us-secondary-1;
+  padding: 25px 40px 30px 40px;
+  color: white;
+}
+
+.unispaces {
+  flex: 2;
+
+  padding-right: 15px;
+  border-right: 1px double white;
+}
+
+.navigation {
+  flex: 2;
+  padding-right: 15px;
+  border-right: 1px double white;
+}
+
+.links {
+  text-decoration: underline;
+}
+
+.me {
+  flex: 3;
+}
+
+.header {
+  font-size: 0.7em;
+  font-weight: 700; 
+  margin: 0;
+  
+  margin-bottom: 20px;
+}
+
+.desc {
+  margin-bottom: 20px;
+}
+
+.intro {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.socials {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.social_link {
+  border-radius: 100px;
+  overflow: hidden;
+  height: 40px;
+}
