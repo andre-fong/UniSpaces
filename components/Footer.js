@@ -3,6 +3,7 @@ import RoundedButton from "./RoundedButton";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Footer.module.scss";
+import { StyleRegistry } from "styled-jsx";
 
 export default function Footer() {
   return (
@@ -66,6 +67,7 @@ export default function Footer() {
               height: "70px",
               overflow: "hidden",
             }}
+            className={styles.pfp}
           >
             <Image
               src="/andre_fong.jpg"

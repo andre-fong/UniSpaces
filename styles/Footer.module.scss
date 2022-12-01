@@ -48,13 +48,29 @@
 }
 
 .socials {
-  display: flex;
+  display: inline-grid;
   gap: 20px;
-  align-items: center;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .social_link {
   border-radius: 100px;
   overflow: hidden;
   height: 40px;
+  width: 40px;
+}
+
+@media (max-width: 700px) {
+  .pfp {
+    display: none;
+  }
+  .navigation {
+    flex: 1;
+  }
+  .me {
+    flex: 2;
+  }
+  .socials {
+    grid-template-columns: 1fr 1fr;
+  }
 }
