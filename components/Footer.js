@@ -3,7 +3,6 @@ import RoundedButton from "./RoundedButton";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Footer.module.scss";
-import { StyleRegistry } from "styled-jsx";
 
 export default function Footer() {
   return (

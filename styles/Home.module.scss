@@ -1,4 +1,33 @@
+@import "./variables.scss";
+
 .content {
-  width: 100%;
-  height: calc(100vh - 77px);
+  padding: 100px 10%;
+
+  // height: calc(100vh - 77px);
+}
+
+.title {
+  font-size: 3em;
+  overflow-wrap: break-word;
+  text-align: center;
+  // color: $us-secondary-1;   // test
+}
+
+.gradient_text {
+  background: linear-gradient(45deg, $us-accent-1, $us-accent-3, $us-accent-1);
+  background-size: 400%;
+  color: transparent;
+  // -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: move-right 4s linear infinite;
+}
+
+@keyframes move-right {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 400%;
+  }
 }

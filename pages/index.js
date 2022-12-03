@@ -8,7 +8,13 @@ export default function Home() {
       <Head>
         <title>Home | UniSpaces</title>
       </Head>
-      <div className={styles.content}></div>
+      <div className={styles.content}>
+        <h1 className={styles.title}>
+          Explore the <span className={styles.gradient_text}>hotspots</span> of
+          <br />
+          Canada&apos;s top Universities and Colleges
+        </h1>
+      </div>
     </>
   );
 }
