@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RoundedButton from "./RoundedButton";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Footer.module.scss";
+import { setRevalidateHeaders } from "next/dist/server/send-payload";
 
 export default function Footer() {
+  const [data, setData] = useState("");
+
+  useEffect(() => {
+    fetch("/api/hello")
+      .then((res) => res.json())
+      .then((data) => setData(data.name));
+  });
+
   return (
     <footer className={styles.Footer}>
       <div className={styles.unispaces}>
-        <h3 className={styles.header}>ABOUT UNISPACES</h3>
+        <h3 className={styles.header}>{data} UNISPACES</h3>
         <div className={styles.desc}>
           <p>
             UniSpaces is a passion project that features the hottest landmarks
