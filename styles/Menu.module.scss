@@ -1,0 +1,17 @@
+@import "./variables.scss";
+
+.container {
+  margin-top: -30px;
+  padding-top: 30px;
+  background-color: white;
+}
+
+.container a:hover {
+  background-color: $us-light-accent-1;
+}
+
+.option {
+  padding: 13px 25px;
+  border-bottom: 1px solid gray;
+  font-weight: 600;
+}

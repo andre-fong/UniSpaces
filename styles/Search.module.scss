@@ -1,0 +1,29 @@
+@import "./variables.scss";
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.input_wrapper {
+  width: min-content;
+  position: relative;
+}
+
+.input_wrapper img {
+  position: absolute;
+  right: 20px;
+  top: calc((1.2em + 40px) / 4);
+}
+
+.input {
+  font-size: 1.2em;
+  padding: 20px 80px 20px 30px;
+  border-radius: 1000px;
+  
+  border: 1px solid gray;
+}
+
+.input:focus {
+  outline: 2px solid $us-secondary-1;
+}
