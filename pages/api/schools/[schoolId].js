@@ -19,8 +19,11 @@ export async function getSchoolById(req) {
     };
   }
 
-  let sql = `SELECT u.uni_id AS id, u.name, u.description, u.type, u.city, u.province, u.img_id, BIN_TO_UUID(u.created_by) AS created_by_id FROM university AS u;`;
-  sql += " WHERE u.uni_id = ?;";
+  let sql = `SELECT u.uni_id AS id, u.name, u.description, u.type, u.city, u.province, i.url AS img, BIN_TO_UUID(u.created_by) AS created_by_id
+  FROM university AS u
+  LEFT JOIN image AS i
+  ON u.img_id = i.img_id
+  WHERE u.uni_id = ?`;
   let queries = [schoolId];
   let results;
 
@@ -63,7 +66,7 @@ export async function updateSchoolById(req) {
   let schoolCreator;
   try {
     const school = await getSQLData(
-      "SELECT BIN_TO_UUID(created_by) AS created_by FROM university WHERE uni_id = ?;",
+      "SELECT BIN_TO_UUID(created_by) AS created_by FROM university WHERE uni_id = ?",
       [schoolId]
     );
     if (school.length === 0) {
@@ -107,7 +110,7 @@ export async function updateSchoolById(req) {
   if (img_id) {
     try {
       const imageCount = await getSQLData(
-        `SELECT COUNT(img_id) as count FROM image WHERE img_id = ?;`,
+        `SELECT COUNT(img_id) as count FROM image WHERE img_id = UUID_TO_BIN(?)`,
         [img_id]
       );
 
@@ -142,11 +145,16 @@ export async function updateSchoolById(req) {
       sql += ", ";
     }
 
-    sql += `${Object.keys(value)[0]} = ?`;
-    queries.push(Object.values(value)[0]);
+    if (Object.keys(value)[0] === "img_id") {
+      sql += `img_id = UUID_TO_BIN(?)`;
+      queries.push(Object.values(value)[0]);
+    } else {
+      sql += `${Object.keys(value)[0]} = ?`;
+      queries.push(Object.values(value)[0]);
+    }
   });
 
-  sql += ` WHERE uni_id = ?;`;
+  sql += ` WHERE uni_id = ?`;
   queries.push(schoolId);
 
   try {
@@ -180,7 +188,7 @@ export async function deleteSchoolById(req) {
   let schoolCreator;
   try {
     const school = await getSQLData(
-      "SELECT BIN_TO_UUID(created_by) as created_by FROM university WHERE uni_id = ?;",
+      "SELECT BIN_TO_UUID(created_by) as created_by FROM university WHERE uni_id = ?",
       [schoolId]
     );
     if (school.length === 0)
@@ -204,7 +212,7 @@ export async function deleteSchoolById(req) {
     return generateHTTPRes(403, "Insufficient permissions");
   }
 
-  let sql = `DELETE FROM university WHERE uni_id = ?;`;
+  let sql = `DELETE FROM university WHERE uni_id = ?`;
   let queries = [schoolId];
 
   try {
