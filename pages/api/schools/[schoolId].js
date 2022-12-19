@@ -103,7 +103,21 @@ export async function updateSchoolById(req) {
     );
   }
 
-  // TODO: Validate img_id with GET /images ********************************************
+  // Check if img_id is valid
+  if (img_id) {
+    try {
+      const imageCount = await getSQLData(
+        `SELECT COUNT(img_id) as count FROM image WHERE img_id = ?;`,
+        [img_id]
+      );
+
+      if (imageCount[0].count === 0) {
+        return generateHTTPRes(404, "Image not found");
+      }
+    } catch (err) {
+      return generateHTTPRes(500, "Internal server error", err);
+    }
+  }
 
   const valuesToUpdate = [
     { name: name },

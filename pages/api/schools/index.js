@@ -122,7 +122,6 @@ export async function addSchool(req) {
     );
   }
 
-  // TODO: REPLACE WITH GET /images ***********************************************
   // Check if img_id is valid
   if (img_id) {
     try {
