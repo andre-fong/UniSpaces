@@ -1,4 +1,8 @@
+import { generateHTTPRes } from "../../../utils/generateHTTPRes";
 import { schoolToType } from "../../../utils/parseSchoolType";
+import { getSQLData } from "../../../utils/sqlQuery";
+import { isProvince } from "../../../utils/validateProvince";
+import { getSession } from "../sessions";
 
 /**
  * GET /schools
@@ -69,21 +73,21 @@ export async function getSchools(req) {
 
   // Add offset and limit
   sql += " LIMIT ? OFFSET ?;";
-  queries.push(limit, offset);
+  queries.push(limit);
+  queries.push(offset);
+
+  let results;
 
   try {
-    const mysql = require("mysql2/promise");
-    const connection = mysql.createPool(process.env.DATABASE_URL);
-
-    const [results, fields] = await connection.execute(sql, queries);
-
-    return { status: 200, json: results };
+    results = await getSQLData(sql, queries);
   } catch (err) {
     return {
       status: 500,
       json: { code: 500, message: "Internal server error", error: err },
     };
   }
+
+  return { status: 200, json: results };
 }
 
 /**
@@ -92,12 +96,70 @@ export async function getSchools(req) {
  * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/School/addSchool
  */
 export async function addSchool(req) {
-  const { name, description, type, city, province } = req.body;
-  const img_id = parseInt(req.body.img_id);
+  // Check if logged in
+  const session = await getSession(req);
 
-  // TODO: Implement once login is finished
+  if (session.status !== 200) {
+    return generateHTTPRes(401, "Not signed in", session.err);
+  }
+  const { user_id } = session.json;
 
-  return { status: 501, json: { message: "Unimplemented" } };
+  const { name, description, type, city, province, img_id } = req.body;
+
+  // Validate body
+  if (!name || !type || !city || !province)
+    return generateHTTPRes(400, "Name, type, city, and province are required");
+  if (name.length > 50)
+    return generateHTTPRes(400, "Name must be 50 characters or less");
+  if (type !== "U" && type !== "C")
+    return generateHTTPRes(400, "Type must be 'U' or 'C'");
+  if (city.length > 35)
+    return generateHTTPRes(400, "City name must be 35 characters or less");
+  if (!isProvince(province)) {
+    return generateHTTPRes(
+      400,
+      "Province name is not a valid abbreviation in Canada"
+    );
+  }
+
+  // TODO: REPLACE WITH GET /images ***********************************************
+  // Check if img_id is valid
+  if (img_id) {
+    try {
+      const imageCount = await getSQLData(
+        `SELECT COUNT(img_id) as count FROM image WHERE img_id = ?`,
+        [img_id]
+      );
+
+      if (imageCount[0].count === 0) {
+        return generateHTTPRes(404, "Image not found");
+      }
+    } catch (err) {
+      return generateHTTPRes(500, "Internal server error", err);
+    }
+  }
+
+  let sql = `INSERT INTO university(name, description, type, city, province, img_id, created_by) VALUES(?, ?, ?, ?, ?, ?, UUID_TO_BIN(?))`;
+  let queries = [
+    name,
+    description || null,
+    type,
+    city,
+    province,
+    img_id || null,
+    user_id,
+  ];
+
+  try {
+    const response = await getSQLData(sql, queries);
+
+    if (response.affectedRows === 0)
+      throw new Error("MySQL error, 0 affected rows");
+  } catch (err) {
+    return generateHTTPRes(500, "Internal server error", err);
+  }
+
+  return generateHTTPRes(201, "Successfully created school");
 }
 
 export default async function handler(req, res) {
