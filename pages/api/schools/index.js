@@ -72,7 +72,7 @@ export async function getSchools(req) {
   }
 
   // Add offset and limit
-  sql += " LIMIT ? OFFSET ?;";
+  sql += " ORDER BY u.name LIMIT ? OFFSET ?;";
   queries.push(limit);
   queries.push(offset);
 
@@ -127,7 +127,7 @@ export async function addSchool(req) {
   if (img_id) {
     try {
       const imageCount = await getSQLData(
-        `SELECT COUNT(img_id) as count FROM image WHERE img_id = ?`,
+        `SELECT COUNT(img_id) as count FROM image WHERE img_id = ?;`,
         [img_id]
       );
 
@@ -139,7 +139,7 @@ export async function addSchool(req) {
     }
   }
 
-  let sql = `INSERT INTO university(name, description, type, city, province, img_id, created_by) VALUES(?, ?, ?, ?, ?, ?, UUID_TO_BIN(?))`;
+  let sql = `INSERT INTO university(name, description, type, city, province, img_id, created_by) VALUES(?, ?, ?, ?, ?, ?, UUID_TO_BIN(?));`;
   let queries = [
     name,
     description || null,

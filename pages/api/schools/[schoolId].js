@@ -19,7 +19,7 @@ export async function getSchoolById(req) {
     };
   }
 
-  let sql = `SELECT u.uni_id AS id, u.name, u.description, u.type, u.city, u.province, u.img_id, BIN_TO_UUID(u.created_by) AS created_by_id FROM university AS u`;
+  let sql = `SELECT u.uni_id AS id, u.name, u.description, u.type, u.city, u.province, u.img_id, BIN_TO_UUID(u.created_by) AS created_by_id FROM university AS u;`;
   sql += " WHERE u.uni_id = ?;";
   let queries = [schoolId];
   let results;
@@ -44,7 +44,7 @@ export async function getSchoolById(req) {
 }
 
 /**
- * PUT /schools
+ * PUT /schools/{schoolId}
  *
  * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/School/updateSchoolById
  */
@@ -63,7 +63,7 @@ export async function updateSchoolById(req) {
   let schoolCreator;
   try {
     const school = await getSQLData(
-      "SELECT BIN_TO_UUID(created_by) AS created_by FROM university WHERE uni_id = ?",
+      "SELECT BIN_TO_UUID(created_by) AS created_by FROM university WHERE uni_id = ?;",
       [schoolId]
     );
     if (school.length === 0) {
@@ -147,6 +147,11 @@ export async function updateSchoolById(req) {
   return generateHTTPRes(200, "Successfully updated school");
 }
 
+/**
+ * DELETE /schools/{schoolId}
+ *
+ * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/School/deleteSchoolById
+ */
 export async function deleteSchoolById(req) {
   const { schoolId } = req.query;
 
@@ -161,7 +166,7 @@ export async function deleteSchoolById(req) {
   let schoolCreator;
   try {
     const school = await getSQLData(
-      "SELECT BIN_TO_UUID(created_by) as created_by FROM university WHERE uni_id = ?",
+      "SELECT BIN_TO_UUID(created_by) as created_by FROM university WHERE uni_id = ?;",
       [schoolId]
     );
     if (school.length === 0)
@@ -185,7 +190,7 @@ export async function deleteSchoolById(req) {
     return generateHTTPRes(403, "Insufficient permissions");
   }
 
-  let sql = `DELETE FROM university WHERE uni_id = ?`;
+  let sql = `DELETE FROM university WHERE uni_id = ?;`;
   let queries = [schoolId];
 
   try {

@@ -18,7 +18,7 @@ export async function getSession(req) {
     };
   }
 
-  let sql = `SELECT BIN_TO_UUID(session_id) AS session_id, BIN_TO_UUID(user_id) AS user_id FROM session WHERE BIN_TO_UUID(session_id) = ?`;
+  let sql = `SELECT BIN_TO_UUID(session_id) AS session_id, BIN_TO_UUID(user_id) AS user_id FROM session WHERE BIN_TO_UUID(session_id) = ?;`;
   let queries = [sessionId];
   let results;
 
@@ -94,7 +94,7 @@ export async function addSession(req, res) {
     });
 
     // Add sessionId on db
-    let sql = `INSERT INTO session(session_id, user_id) VALUES(UUID_TO_BIN(?), ?)`;
+    let sql = `INSERT INTO session(session_id, user_id) VALUES(UUID_TO_BIN(?), ?);`;
     let queries = [uid, user.user_id];
 
     try {
@@ -153,7 +153,7 @@ export async function deleteSession(req, res) {
 
   return {
     status: 201,
-    json: { code: 201, message: "Sucessfully deleted session" },
+    json: { code: 201, message: "Successfully deleted session" },
   };
 }
 
