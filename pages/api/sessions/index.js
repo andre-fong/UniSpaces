@@ -18,7 +18,7 @@ export async function getSession(req) {
     };
   }
 
-  let sql = `SELECT BIN_TO_UUID(session_id) AS session_id, BIN_TO_UUID(user_id) AS user_id FROM session WHERE BIN_TO_UUID(session_id) = ?;`;
+  let sql = `SELECT BIN_TO_UUID(session_id) AS session_id, BIN_TO_UUID(user_id) AS user_id FROM session WHERE BIN_TO_UUID(session_id) = ?`;
   let queries = [sessionId];
   let results;
 
@@ -53,7 +53,7 @@ export async function addSession(req, res) {
     return generateHTTPRes(400, "Username and password required");
   }
 
-  let sql = "SELECT user_id, password FROM user WHERE username = ?;";
+  let sql = "SELECT user_id, password FROM user WHERE username = ?";
   let queries = [username];
   let results;
 
@@ -74,13 +74,23 @@ export async function addSession(req, res) {
   }
 
   // User obj from db
-  user = results[0];
+  const user = results[0];
 
   const isLogged = await bcrypt.compare(password, user.password);
 
   if (isLogged) {
-    const uid = crypto.randomUUID();
-    console.log(uid);
+    let uid;
+    try {
+      const crypto = require("crypto");
+      uid = crypto.randomUUID();
+
+      // Delete previous session before creating a new one
+      const deletedSession = await deleteSession(req, res);
+
+      if (deletedSession.status === 500) return deletedSession;
+    } catch (err) {
+      return generateHTTPRes(500, "Internal server error", err);
+    }
 
     // Set cookie
     setCookie("sessionId", uid, {
@@ -89,7 +99,7 @@ export async function addSession(req, res) {
       secure: true,
       httpOnly: true,
       sameSite: true,
-      maxAge: 120,
+      maxAge: 6000,
       signed: true,
     });
 
@@ -133,7 +143,7 @@ export async function deleteSession(req, res) {
     };
   }
 
-  let sql = `DELETE FROM session WHERE session_id = UUID_TO_BIN(?);`;
+  let sql = `DELETE FROM session WHERE session_id = UUID_TO_BIN(?)`;
   let queries = [sessionId];
 
   try {
