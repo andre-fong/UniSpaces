@@ -24,9 +24,9 @@ export async function getTags() {
 /**
  * POST /tags
  *
- * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/Tag/addSpaceTag
+ * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/Tag/addTag
  */
-export async function addSpaceTag(req) {
+export async function addTag(req) {
   const session = await getSession(req);
 
   if (session.status !== 200) {
@@ -35,26 +35,13 @@ export async function addSpaceTag(req) {
 
   const { user_id } = session.json;
 
-  const { name, spaceId } = req.body;
+  // Name of tag
+  const { name } = req.body;
 
   // Validate name and spaceId
-  if (!name || !spaceId)
-    return generateHTTPRes(400, "Name and spaceId are required");
+  if (!name) return generateHTTPRes(400, "Name is required");
   if (name.length > 50)
     return generateHTTPRes(400, "Name is at most 50 characters");
-
-  // Check if space exists
-  let space;
-  try {
-    space = await getSQLData(
-      `SELECT COUNT(space_id) AS count FROM space WHERE space_id = ?`,
-      [spaceId]
-    );
-  } catch (err) {
-    return generateHTTPRes(500, "Internal server error", err);
-  }
-  if (space[0].count === 0)
-    return generateHTTPRes(404, `Space not found with id ${spaceId}`);
 
   // Check if tag name already exists
   let tag;
@@ -85,20 +72,7 @@ export async function addSpaceTag(req) {
     return generateHTTPRes(500, "Internal server error", err);
   }
 
-  // Write space-tag relationship to tagged_with table
-  let sql2 = `INSERT INTO tagged_with(space_id, tag_id) VALUES(?, ?)`;
-  let queries2 = [spaceId, tagId];
-  try {
-    const response = await getSQLData(sql2, queries2);
-
-    if (response.affectedRows === 0) {
-      return generateHTTPRes(500, "MySQL error, 0 affected rows");
-    }
-  } catch (err) {
-    return generateHTTPRes(500, "Internal server error", err);
-  }
-
-  return generateHTTPRes(201, "Successfully added tag to space");
+  return generateHTTPRes(201, "Successfully added tag");
 }
 
 export default async function handler(req, res) {
@@ -106,7 +80,7 @@ export default async function handler(req, res) {
     const { status, json } = await getTags();
     res.status(status).json(json);
   } else if (req.method === "POST") {
-    const { status, json } = await addSpaceTag(req);
+    const { status, json } = await addTag(req);
     res.status(status).json(json);
   } else res.status(405).json({ code: 405, message: "Method not allowed" });
 }
