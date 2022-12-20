@@ -112,8 +112,8 @@ export async function addSchool(req) {
   // Validate body
   if (!name || !type || !city || !province)
     return generateHTTPRes(400, "Name, type, city, and province are required");
-  if (name.length > 50)
-    return generateHTTPRes(400, "Name must be 50 characters or less");
+  if (name.length > 100)
+    return generateHTTPRes(400, "Name must be 100 characters or less");
   if (type !== "U" && type !== "C")
     return generateHTTPRes(400, "Type must be 'U' or 'C'");
   if (city.length > 35)
