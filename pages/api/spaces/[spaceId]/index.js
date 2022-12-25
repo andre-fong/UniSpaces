@@ -10,7 +10,7 @@ import { getSession } from "../../sessions";
 export async function getSpaceById(req) {
   const { spaceId } = req.query;
 
-  /// spaceId should only include digits
+  // spaceId should only include digits
   if (!spaceId.match(/^[0-9]+$/)) {
     return generateHTTPRes(400, "Space id should only contain digits");
   }
@@ -54,6 +54,11 @@ export async function updateSpaceById(req) {
   const { user_id } = session.json;
 
   const { spaceId } = req.query;
+
+  // spaceId should only include digits
+  if (!spaceId.match(/^[0-9]+$/)) {
+    return generateHTTPRes(400, "Space id should only contain digits");
+  }
 
   // Check if space exists, if it does check if user is the creator
   let space;
@@ -155,7 +160,6 @@ export async function deleteSpaceById(req) {
 }
 
 export default async function handler(req, res) {
-  // Check if req method is GET, PUT, or DELETE
   if (req.method === "GET") {
     const { status, json } = await getSpaceById(req);
     res.status(status).json(json);
