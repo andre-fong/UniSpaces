@@ -13,10 +13,10 @@ export default function Home() {
         <h1 className={styles.title}>
           Explore the <span className={styles.gradient_text}>hotspots</span> of
           <br />
-          Canada&apos;s top Universities and Colleges
+          Canada&apos;s top Universities and Colleges.
         </h1>
 
-        <div style={{ marginTop: "40px", marginBottom: "80px" }}>
+        <div style={{ marginTop: "45px", marginBottom: "80px" }}>
           <SearchDropdown width={500} />
         </div>
       </div>

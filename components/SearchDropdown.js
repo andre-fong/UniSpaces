@@ -7,23 +7,32 @@ import DropdownMenu from "./DropdownMenu";
 export default function Dropdown({ width, height }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]);
 
-  // useEffect(() => {
-  //   const promise = getData(`/api/university?name=${query}`, {
-  //     method: "GET",
-  //     headers: { "Content-Type": "application/json" },
-  //     credentials: "include",
-  //   });
+  useEffect(() => {
+    if (query.length < 2) {
+      setResults([]);
+      return;
+    } else {
+      setLoading(true);
+      const promise = fetch(`/api/schools?similarTo=${query}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
 
-  //   promise
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //       setLoading(false);
-  //       setResults(data);
-  //     });
-  // }, [query]);
+      promise
+        .then((res) => res.json())
+        .then((data) => {
+          setResults(data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    }
+  }, [query]);
 
   let icon = loading ? (
     <Image src="/loading.gif" width={35} height={35} alt="Loading" />
@@ -31,22 +40,17 @@ export default function Dropdown({ width, height }) {
     <Image src="/magnifyingGlass.png" width={38} height={38} alt="Search" />
   );
 
-  function handleChange(e) {
-    setLoading(true);
-    setQuery(e.target.value);
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.input_wrapper}>
         <input
           type="text"
-          autoComplete="none"
+          autoComplete="off"
           className={styles.input}
           id="input"
           placeholder="Search for a university or college here..."
           value={query}
-          onChange={handleChange}
+          onChange={(e) => setQuery(e.target.value)}
           style={{ width: width, height: height }}
         />
         {icon}

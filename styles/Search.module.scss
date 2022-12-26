@@ -3,6 +3,8 @@
 .container {
   display: flex;
   justify-content: center;
+  position: relative;
+  z-index: 0;
 }
 
 .input_wrapper {
@@ -21,9 +23,9 @@
   padding: 20px 80px 20px 30px;
   border-radius: 1000px;
   
-  border: 1px solid gray;
+  border: 1.5px solid gray;
 }
 
 .input:focus {
-  outline: 2px solid $us-secondary-1;
+  outline: 1.5px solid $us-secondary-1;
 }
