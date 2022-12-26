@@ -8,6 +8,7 @@ export default function Home() {
     <>
       <Head>
         <title>Home | UniSpaces</title>
+        {/* Facebook Meta Tags */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://uni-spaces.vercel.app/" />
         <meta
@@ -20,6 +21,22 @@ export default function Home() {
         />
         <meta
           property="og:image"
+          content="https://uni-spaces.vercel.app/unispacesBanner.jpg"
+        />
+        {/* Twitter Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="uni-spaces.vercel.app" />
+        <meta property="twitter:url" content="https://uni-spaces.vercel.app/" />
+        <meta
+          name="twitter:title"
+          content="UniSpaces - Explore the hotspots of Canada's top Universities and Colleges"
+        />
+        <meta
+          name="twitter:description"
+          content="UniSpaces is a platform that allows students to explore the hotspots of Canada's top Universities and Colleges."
+        />
+        <meta
+          name="twitter:image"
           content="https://uni-spaces.vercel.app/unispacesBanner.jpg"
         />
       </Head>
