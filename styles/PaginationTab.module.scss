@@ -1,0 +1,49 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.inner_container {
+  display: flex;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: white;
+
+  a {
+    transition: background-color 0.15s;
+  }
+  a:hover, a:focus {
+    background-color: rgb(232, 232, 232);
+  }
+}
+
+.previous, .next {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 20px;
+}
+.previous {
+  border-right: 1px solid gray;
+}
+.next {
+  border-left: 1px solid gray;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+.active {
+  // font-weight: bold;
+  background-color: rgb(232, 232, 232);
+}
+
+.page {
+  padding: 15px 20px;
+}
+
+.ellipsis {
+  letter-spacing: 3px;
+  padding: 15px;
+}

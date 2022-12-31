@@ -34,7 +34,21 @@ export async function getImages(req) {
  *
  * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/Image/addImage
  */
-export async function addImage(req) {}
+export async function addImage(req) {
+  // Check if logged in
+  const session = await getSession(req);
+
+  if (session.status !== 200) {
+    return generateHTTPRes(401, "Not signed in", session.err);
+  }
+  const { user_id } = session.json;
+
+  // TODO: Add integration with Cloudinary
+
+  // POST https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/image/upload
+
+  return { status: 201, json: { message: "Not done yet" } };
+}
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
@@ -43,5 +57,5 @@ export default async function handler(req, res) {
   } else if (req.method === "POST") {
     const { status, json } = await addImage(req);
     res.status(status).json(json);
-  } else res.status(501).json({ code: 501, message: "Not implemented" });
+  } else res.status(405).json({ code: 405, message: "Method not allowed" });
 }
