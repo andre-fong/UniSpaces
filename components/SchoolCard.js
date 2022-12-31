@@ -17,7 +17,9 @@ export default function SchoolCard({ school }) {
             <Image
               src={school.img || "/defaultSchool.jpg"}
               alt={school.name}
+              priority
               fill
+              sizes="250px"
             />
           </div>
           <div className={styles.info}>
@@ -37,7 +39,8 @@ export default function SchoolCard({ school }) {
                         ? `${user.username}'s Profile`
                         : "No profile provided"
                     }
-                    fill
+                    width={30}
+                    height={30}
                   />
                 </div>
 
