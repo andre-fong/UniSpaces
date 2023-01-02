@@ -2,6 +2,7 @@ import { setCookie, getCookie, deleteCookie } from "cookies-next";
 import { getSQLData } from "../../../utils/sqlQuery";
 import bcrypt from "bcrypt";
 import { generateHTTPRes } from "../../../utils/generateHTTPRes";
+import { getUserById } from "../users/[userId]";
 
 /**
  * GET /sessions
@@ -38,7 +39,11 @@ export async function getSession(req) {
     };
   }
 
-  return { status: 200, json: results[0] };
+  // Get user info from results
+  const user = await getUserById({ query: { userId: results[0].user_id } });
+  if (user.status !== 200) return user;
+
+  return { status: 200, json: user };
 }
 
 /**
@@ -119,7 +124,10 @@ export async function addSession(req, res) {
       };
     }
 
-    return { status: 201, json: "Successfully created session" };
+    return {
+      status: 201,
+      json: { code: 201, message: "Successfully created session" },
+    };
   } else {
     return {
       status: 401,
