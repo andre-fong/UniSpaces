@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-export function useUserFetching(user_id) {
-  const [user, setUser] = useState(null);
+export function useTags(space_id) {
+  const [tags, setTags] = useState(null);
 
   useEffect(() => {
-    if (user_id) {
-      const promise = fetch(`/api/users/${user_id}`, {
+    if (space_id) {
+      const promise = fetch(`/api/spaces/${space_id}/tags`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -18,13 +18,13 @@ export function useUserFetching(user_id) {
           return res.json();
         })
         .then((data) => {
-          setUser(data);
+          setTags(data);
         })
         .catch((err) => {
           console.error(err);
         });
     }
-  }, [user_id]);
+  }, [space_id]);
 
-  return user;
+  return tags;
 }

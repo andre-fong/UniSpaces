@@ -30,7 +30,7 @@ export async function getSpaceTags(req) {
     return generateHTTPRes(404, `Space not found with id ${spaceId}`);
 
   // Get tags belonging to space
-  let sql = `SELECT tw.tag_id, t.name, t.color, BIN_TO_UUID(t.created_by) AS created_by_id
+  let sql = `SELECT tw.tag_id AS id, t.name, t.color, BIN_TO_UUID(t.created_by) AS created_by_id
   FROM tagged_with AS tw
   INNER JOIN tag AS t
   ON tw.tag_id = t.tag_id

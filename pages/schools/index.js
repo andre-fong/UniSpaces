@@ -105,11 +105,11 @@ export default function Schools({ schools, error, query, count, page }) {
         {schools.length > 0 ? (
           <h1 className={styles.results_message}>
             Showing {(page - 1) * 10 + 1}-{Math.min(page * 10, count)} of{" "}
-            {count} results {query && `for "${query}"`}
+            {count} schools {query && `for "${query}"`}:
           </h1>
         ) : (
           <h1 className={styles.results_message}>
-            Showing 0 results {query && `for "${query}"`}
+            Showing 0 results {query && `for "${query}"`}:
           </h1>
         )}
 
