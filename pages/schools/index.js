@@ -36,7 +36,7 @@ export default function Schools({ schools, error, query, count, page }) {
     e.preventDefault();
 
     // Send user to search schools page
-    router.push(`/schools?query=${search}`);
+    router.push(search ? `/schools?query=${search}` : "/schools");
   }
 
   return (

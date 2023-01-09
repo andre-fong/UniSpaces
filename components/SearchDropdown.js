@@ -42,7 +42,7 @@ export default function Dropdown({ width, height }) {
     e.preventDefault();
 
     // Send user to search schools page
-    router.push(`/schools?query=${query}`);
+    router.push(query ? `/schools?query=${query}` : "/schools");
   }
 
   return (
