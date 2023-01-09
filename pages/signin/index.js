@@ -17,6 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LockIcon from "@mui/icons-material/Lock";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RoundedButton from "../../components/RoundedButton";
+import Head from "next/head";
 
 export default function Signin() {
   const router = useRouter();
@@ -64,122 +65,127 @@ export default function Signin() {
   };
 
   return (
-    <div className={styles.content}>
-      <div className={styles.modal}>
-        <Link href="/">
-          <div className={styles.logo}>
-            <Image
-              src="/android-chrome-512x512.png"
-              alt="UniSpaces logo"
-              width={30}
-              height={30}
-            />
-            <h2 className={styles.unispaces}>UniSpaces</h2>
-          </div>
-        </Link>
-        <h1 className={styles.title}>Sign in</h1>
-        <div className={styles.subtitle}>to continue to UniSpaces</div>
+    <>
+      <Head>
+        <title>Sign in | UniSpaces</title>
+      </Head>
+      <div className={styles.content}>
+        <div className={styles.modal}>
+          <Link href="/">
+            <div className={styles.logo}>
+              <Image
+                src="/android-chrome-512x512.png"
+                alt="UniSpaces logo"
+                width={30}
+                height={30}
+              />
+              <h2 className={styles.unispaces}>UniSpaces</h2>
+            </div>
+          </Link>
+          <h1 className={styles.title}>Sign in</h1>
+          <div className={styles.subtitle}>to continue to UniSpaces</div>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          autoComplete="off"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          width="100%"
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            autoComplete="off"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+            width="100%"
+          >
+            <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
+              <InputLabel htmlFor="username" error={error}>
+                Username
+              </InputLabel>
+              <OutlinedInput
+                id="username"
+                name="username"
+                type="text"
+                error={error}
+                placeholder="Username"
+                required
+                startAdornment={
+                  <InputAdornment position="start">
+                    <AccountCircleIcon />
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+
+            <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
+              <InputLabel htmlFor="password" error={error}>
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                error={error}
+                placeholder="Password"
+                required
+                startAdornment={
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                      }}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+            <div className={styles.bottom}>
+              <Link href="/signup">
+                <span className={styles.create_account}>Create an account</span>
+              </Link>
+              <RoundedButton
+                text="Confirm"
+                primary="rgb(255, 77, 77)"
+                secondary="white"
+                submit
+              />
+            </div>
+          </Box>
+        </div>
+
+        <Snackbar
+          open={toastOpen && error}
+          autoHideDuration={5000}
+          onClose={handleClose}
         >
-          <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
-            <InputLabel htmlFor="username" error={error}>
-              Username
-            </InputLabel>
-            <OutlinedInput
-              id="username"
-              name="username"
-              type="text"
-              error={error}
-              placeholder="Username"
-              required
-              startAdornment={
-                <InputAdornment position="start">
-                  <AccountCircleIcon />
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
+          <Alert severity="error" onClose={handleClose}>
+            That wasn&apos;t in our records. Try again?
+          </Alert>
+        </Snackbar>
 
-          <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
-            <InputLabel htmlFor="password" error={error}>
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              error={error}
-              placeholder="Password"
-              required
-              startAdornment={
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              }
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Toggle password visibility"
-                    onClick={() => {
-                      setShowPassword(!showPassword);
-                    }}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                    }}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
-          <div className={styles.bottom}>
-            <Link href="/signup">
-              <span className={styles.create_account}>Create an account</span>
-            </Link>
-            <RoundedButton
-              text="Confirm"
-              primary="rgb(255, 77, 77)"
-              secondary="white"
-              submit
-            />
-          </div>
-        </Box>
+        <Snackbar
+          open={toastOpen && error === false}
+          autoHideDuration={5000}
+          onClose={handleClose}
+        >
+          <Alert severity="success" onClose={handleClose}>
+            Successfully signed in!
+          </Alert>
+        </Snackbar>
       </div>
-
-      <Snackbar
-        open={toastOpen && error}
-        autoHideDuration={5000}
-        onClose={handleClose}
-      >
-        <Alert severity="error" onClose={handleClose}>
-          That wasn&apos;t in our records. Try again?
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        open={toastOpen && error === false}
-        autoHideDuration={5000}
-        onClose={handleClose}
-      >
-        <Alert severity="success" onClose={handleClose}>
-          Successfully signed in!
-        </Alert>
-      </Snackbar>
-    </div>
+    </>
   );
 }
