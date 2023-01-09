@@ -54,7 +54,7 @@ export async function addUser(req) {
   if (existingUser.status !== 200) return existingUser;
 
   if (existingUser.json.length > 0)
-    return generateHTTPRes(400, "Username already exists");
+    return generateHTTPRes(409, "Username already exists");
 
   // Check if img_id is valid
   if (img_id) {

@@ -101,6 +101,8 @@ export default function Signin() {
               name="username"
               type="text"
               error={error}
+              placeholder="Username"
+              required
               startAdornment={
                 <InputAdornment position="start">
                   <AccountCircleIcon />
@@ -119,6 +121,8 @@ export default function Signin() {
               name="password"
               type={showPassword ? "text" : "password"}
               error={error}
+              placeholder="Password"
+              required
               startAdornment={
                 <InputAdornment position="start">
                   <LockIcon />
@@ -145,7 +149,7 @@ export default function Signin() {
           </FormControl>
           <div className={styles.bottom}>
             <Link href="/signup">
-              <span className={styles.create_account}>Create account</span>
+              <span className={styles.create_account}>Create an account</span>
             </Link>
             <RoundedButton
               text="Confirm"
