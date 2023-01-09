@@ -10,6 +10,8 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LockIcon from "@mui/icons-material/Lock";
@@ -19,6 +21,8 @@ import RoundedButton from "../../components/RoundedButton";
 export default function Signin() {
   const router = useRouter();
 
+  const [error, setError] = useState(null);
+  const [toastOpen, setToastOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // Handles submitting signin form
@@ -37,13 +41,27 @@ export default function Signin() {
       }),
     })
       .then((res) => {
-        if (res.status !== 201) throw new Error("Failed to sign in");
+        if (res.status !== 201) {
+          setError(true);
+          setToastOpen(true);
+          throw new Error("Failed to sign in");
+        }
+        setError(false);
+        setToastOpen(true);
         console.log("Signed in");
       })
       .catch((err) => {
         console.warn(err);
       });
   }
+
+  // Handle closing toast message
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setToastOpen(false);
+  };
 
   return (
     <div className={styles.content}>
@@ -75,11 +93,14 @@ export default function Signin() {
           width="100%"
         >
           <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
-            <InputLabel htmlFor="username">Username</InputLabel>
+            <InputLabel htmlFor="username" error={error}>
+              Username
+            </InputLabel>
             <OutlinedInput
               id="username"
               name="username"
               type="text"
+              error={error}
               startAdornment={
                 <InputAdornment position="start">
                   <AccountCircleIcon />
@@ -90,11 +111,14 @@ export default function Signin() {
           </FormControl>
 
           <FormControl sx={{ m: 2, width: "300px" }} variant="outlined">
-            <InputLabel htmlFor="password">Password</InputLabel>
+            <InputLabel htmlFor="password" error={error}>
+              Password
+            </InputLabel>
             <OutlinedInput
               id="password"
               name="password"
               type={showPassword ? "text" : "password"}
+              error={error}
               startAdornment={
                 <InputAdornment position="start">
                   <LockIcon />
@@ -132,6 +156,26 @@ export default function Signin() {
           </div>
         </Box>
       </div>
+
+      <Snackbar
+        open={toastOpen && error}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
+        <Alert severity="error" onClose={handleClose}>
+          That wasn&apos;t in our records. Try again?
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={toastOpen && error === false}
+        autoHideDuration={5000}
+        onClose={handleClose}
+      >
+        <Alert severity="success" onClose={handleClose}>
+          Successfully signed in!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
