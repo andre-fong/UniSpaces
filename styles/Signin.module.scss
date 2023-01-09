@@ -1,0 +1,65 @@
+@import "../styles/variables.scss";
+
+.content {
+  padding: 50px 200px 100px 200px;
+  display: flex;
+  justify-content: center;
+}
+
+.modal {
+  width: 450px;
+  background-color: white;
+  border-radius: 30px;
+  padding: 40px 50px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.unispaces {
+  margin: 0;
+  font-family: "Lora", serif;
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-weight: 500;
+  font-size: 1.2em;
+
+  margin-bottom: 20px;
+}
+
+.bottom {
+  width: 100%;
+  margin-top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.create_account {
+  color: $us-secondary-1;
+}
+
+// .form {
+//   input {
+//     display: block;
+//     width: 250px;
+//     padding: 15px 20px;
+
+//     position: relative;
+    
+//     margin-bottom: 30px;
+//   }
+// }
