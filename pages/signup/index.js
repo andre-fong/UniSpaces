@@ -232,7 +232,7 @@ export default function Signup() {
           onClose={handleClose}
         >
           <Alert severity="success" onClose={handleClose}>
-            Success! Redirecting to sign in page...
+            Success! Redirecting you to our sign in page...
           </Alert>
         </Snackbar>
 

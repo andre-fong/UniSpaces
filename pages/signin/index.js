@@ -20,8 +20,6 @@ import RoundedButton from "../../components/RoundedButton";
 import Head from "next/head";
 
 export default function Signin() {
-  const router = useRouter();
-
   const [error, setError] = useState(null);
   const [toastOpen, setToastOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,6 +48,9 @@ export default function Signin() {
         setError(false);
         setToastOpen(true);
         console.log("Signed in");
+        setTimeout(() => {
+          location.href = "/";
+        }, 3000);
       })
       .catch((err) => {
         console.warn(err);
@@ -182,7 +183,7 @@ export default function Signin() {
           onClose={handleClose}
         >
           <Alert severity="success" onClose={handleClose}>
-            Successfully signed in!
+            Successfully signed in! Redirecting you to our homepage...
           </Alert>
         </Snackbar>
       </div>
