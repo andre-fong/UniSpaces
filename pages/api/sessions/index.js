@@ -43,7 +43,7 @@ export async function getSession(req) {
   const user = await getUserById({ query: { userId: results[0].user_id } });
   if (user.status !== 200) return user;
 
-  return { status: 200, json: user };
+  return { status: 200, json: user.json };
 }
 
 /**

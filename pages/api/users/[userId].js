@@ -9,7 +9,7 @@ import { generateHTTPRes } from "../../../utils/generateHTTPRes";
 export async function getUserById(req) {
   const { userId } = req.query;
 
-  let sql = `SELECT BIN_TO_UUID(u.user_id) AS id, u.username, i.url AS img
+  let sql = `SELECT BIN_TO_UUID(u.user_id) AS user_id, u.username, i.url AS img
   FROM user AS u
   LEFT JOIN image AS i
   ON u.img_id = i.img_id
