@@ -14,7 +14,7 @@ export function useUser() {
   const { data, error } = useSWR(`/api/sessions`, fetcher);
 
   return {
-    user: data?.json,
+    user: data,
     loading: !data && !error,
     error,
   };

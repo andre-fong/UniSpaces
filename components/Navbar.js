@@ -43,7 +43,7 @@ export default function Navbar() {
 
   if (error) console.error(error);
 
-  const right = loading ? null : user ? (
+  const right = loading ? null : user.code !== 404 ? (
     <div className={styles.right}>
       <div className={styles.profile}>
         <button
