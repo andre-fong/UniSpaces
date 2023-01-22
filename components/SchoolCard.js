@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useUserFetching } from "../utils/useUserFetching";
 
 export default function SchoolCard({ school }) {
-  const user = useUserFetching(school.created_by_id);
+  const { user, loading: userLoading } = useUserFetching(school.created_by_id);
 
   return (
     <div className={styles.content}>

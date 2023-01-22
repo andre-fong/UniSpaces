@@ -1,30 +1,24 @@
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 
 export function useTags(space_id) {
-  const [tags, setTags] = useState(null);
+  // Session fetcher function
+  async function fetcher(url) {
+    return fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    }).then((res) => res.json());
+  }
 
-  useEffect(() => {
-    if (space_id) {
-      const promise = fetch(`/api/spaces/${space_id}/tags`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+  // Get user data with useSWR
+  const { data, error } = useSWR(
+    space_id ? `/api/spaces/${space_id}/tags` : null,
+    fetcher
+  );
 
-      promise
-        .then((res) => {
-          if (res.status !== 200)
-            throw new Error(`Error fetching data: ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          setTags(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [space_id]);
-
-  return tags;
+  return {
+    tags: space_id ? data : [],
+    loading: !data && !error,
+    error,
+  };
 }

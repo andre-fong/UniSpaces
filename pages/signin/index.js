@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../../styles/Signin.module.scss";
-import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";

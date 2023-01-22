@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { getSQLData } from "../../utils/sqlQuery";
 import { getSchoolById } from "../api/schools/[schoolId]";
 import { getSpaces } from "../api/spaces";
@@ -6,8 +6,12 @@ import styles from "../../styles/SchoolPage.module.scss";
 import Head from "next/head";
 import Image from "next/image";
 import SpaceCard from "../../components/SpaceCard";
+import SpaceModal from "../../components/SpaceModal";
 
 export default function SchoolSpaces({ school, spaces }) {
+  // Space number open in modal
+  const [modalOpen, setModalOpen] = useState(null);
+
   return (
     <>
       <Head>
@@ -51,10 +55,21 @@ export default function SchoolSpaces({ school, spaces }) {
           </h2>
           <div className={styles.results}>
             {spaces.length > 0 &&
-              spaces.map((space) => <SpaceCard key={space.id} space={space} />)}
+              spaces.map((space, index) => (
+                <SpaceCard
+                  key={space.id}
+                  space={space}
+                  onClick={() => setModalOpen(index)}
+                />
+              ))}
           </div>
         </main>
       </div>
+      <SpaceModal
+        open={modalOpen !== null}
+        setOpen={setModalOpen}
+        space={modalOpen !== null ? spaces[modalOpen] : null}
+      />
     </>
   );
 }
@@ -93,7 +108,9 @@ export async function getStaticProps({ params }) {
 
   // Get spaces
   let spaces;
-  const spaceResponse = await getSpaces({ query: { schoolId: id } });
+  const spaceResponse = await getSpaces({
+    query: { schoolId: id, limit: 99 },
+  });
   if (spaceResponse.status === 200) spaces = spaceResponse.json;
   else return { notFound: true };
 

@@ -69,3 +69,14 @@
 .main {
   padding: 20px 50px;
 }
+
+.results {
+  display: grid;
+  
+  // Responsive column sizes
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  column-gap: 15px;
+  row-gap: 30px;
+
+  margin-top: 30px;
+}

@@ -1,30 +1,24 @@
-import { useState, useEffect } from "react";
+import useSWR from "swr";
 
 export function useUserFetching(user_id) {
-  const [user, setUser] = useState(null);
+  // Session fetcher function
+  async function fetcher(url) {
+    return fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    }).then((res) => res.json());
+  }
 
-  useEffect(() => {
-    if (user_id) {
-      const promise = fetch(`/api/users/${user_id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+  // Get user data with useSWR
+  const { data, error } = useSWR(
+    user_id ? `/api/users/${user_id}` : null,
+    fetcher
+  );
 
-      promise
-        .then((res) => {
-          if (res.status !== 200)
-            throw new Error(`Error fetching data: ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          setUser(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [user_id]);
-
-  return user;
+  return {
+    user: user_id ? data : null,
+    loading: !data && !error,
+    error,
+  };
 }
