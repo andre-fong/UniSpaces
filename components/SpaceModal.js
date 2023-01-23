@@ -206,7 +206,7 @@ export default function Modal({ open, setOpen, space }) {
         onClose={handleCloseNotLogged}
       >
         <Alert severity="error" onClose={handleCloseNotLogged}>
-          Oops! You must be logged in to continue. {signinButton}
+          Oops! You must be signed in to continue. {signinButton}
         </Alert>
       </Snackbar>
 

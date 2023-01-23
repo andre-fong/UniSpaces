@@ -26,6 +26,7 @@
 .unispaces {
   margin: 0;
   font-family: "Lora", serif;
+  letter-spacing: 0.5px;
 }
 
 .title {
@@ -52,15 +53,3 @@
 .create_account {
   color: $us-secondary-1;
 }
-
-// .form {
-//   input {
-//     display: block;
-//     width: 250px;
-//     padding: 15px 20px;
-
-//     position: relative;
-    
-//     margin-bottom: 30px;
-//   }
-// }

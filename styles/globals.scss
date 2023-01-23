@@ -1,5 +1,9 @@
 @import "../styles/variables";
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+
+@font-face {
+  font-family: "Lora";
+  src: url("../public/Lora-VariableFont_wght.ttf");
+}
 
 html, body {
   padding: 0;
