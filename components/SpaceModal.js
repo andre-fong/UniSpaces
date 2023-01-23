@@ -12,6 +12,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Link from "next/link";
+import { useSpaceLiked } from "../utils/useSpaceLiked";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Modal({ open, setOpen, space }) {
   const { tags, loading: tagsLoading } = useTags(space?.id);
@@ -19,32 +21,46 @@ export default function Modal({ open, setOpen, space }) {
     space?.created_by_id
   );
   const { user, loading, error } = useUser();
-  const [liked, setLiked] = useState(false);
+  const { liked, loading: likedLoading } = useSpaceLiked(space?.id);
+  const [likeClicked, setLikeClicked] = useState({});
+  console.log(likeClicked);
+  const [likes, setLikes] = useState({});
+  console.log(likes);
 
+  // Update likes state when space changes
+  useEffect(() => {
+    if (!space) return;
+    if (likes[space.id] === undefined) {
+      setLikes((prev) => {
+        return { ...prev, [space.id]: space.likes };
+      });
+    }
+  }, [space, likes]);
+
+  // Update likeClicked state when liked state changes
+  useEffect(() => {
+    if (!space) return;
+
+    if (!likedLoading && liked && likeClicked[space.id] === undefined) {
+      setLikeClicked((prev) => {
+        return { ...prev, [space.id]: true };
+      });
+    }
+  }, [liked, likedLoading, likeClicked, space]);
+
+  // State for toast messages
   const [success, setSuccess] = useState(false);
   const [notLogged, setNotLogged] = useState(false);
   const [internalError, setInternalError] = useState(false);
 
-  // Add useEffect to fetch if space is already liked by user
-  useEffect(() => {
-    if (user?.code === 404) return;
-    if (loading || error) return;
-
-    // Logic to fetch if space is liked by user
-  }, [user, loading, error]);
-
   function checkIfParentElementClicked(e) {
     if (e.target !== e.currentTarget) return;
     setOpen(null);
+    setSuccess(false);
+    setNotLogged(false);
+    setInternalError(false);
   }
 
-  // function handleClose(event, reason) {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-
-  //   setSnackbarOpen(false);
-  // }
   function handleCloseSuccess(e, reason) {
     if (reason === "clickaway") {
       return;
@@ -73,10 +89,28 @@ export default function Modal({ open, setOpen, space }) {
       setInternalError(true);
       return;
     }
+    if (likedLoading || !space) return;
 
-    // Logic to like/unlike space
+    fetch(`/api/spaces/${space.id}/likes`, {
+      method: likeClicked[space.id] ? "DELETE" : "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+
+    setLikes((prev) => {
+      return {
+        ...prev,
+        [space.id]: likeClicked[space.id]
+          ? prev[space.id] - 1
+          : prev[space.id] + 1,
+      };
+    });
+    setLikeClicked((prev) => {
+      return { ...prev, [space.id]: likeClicked[space.id] ? false : true };
+    });
     setSuccess(true);
-    setLiked(!liked);
   }
 
   const signinButton = (
@@ -116,7 +150,6 @@ export default function Modal({ open, setOpen, space }) {
               <Image
                 src={space?.img || "/defaultSpace.jpg"}
                 alt={space?.name || "No image provided"}
-                priority
                 fill
               />
             </a>
@@ -145,19 +178,25 @@ export default function Modal({ open, setOpen, space }) {
             <p className={cardStyles.username}>{creator?.username || ""}</p>
           </div>
 
-          <div
-            className={`${styles.likes} ${cardStyles.likes}`}
-            style={{ color: liked ? "rgb(255, 77, 77)" : "black" }}
-          >
-            <IconButton
-              onClick={handleLike}
-              sx={{ color: "inherit" }}
-              aria-label="like"
+          {!likedLoading ? (
+            <div
+              className={`${styles.likes} ${cardStyles.likes}`}
+              style={{
+                color: likeClicked[space.id] ? "rgb(255, 77, 77)" : "black",
+              }}
             >
-              <ThumbUpIcon />
-            </IconButton>
-            {liked ? space?.likes + 1 : space?.likes}
-          </div>
+              <IconButton
+                onClick={handleLike}
+                sx={{ color: "inherit" }}
+                aria-label="like"
+              >
+                <ThumbUpIcon />
+              </IconButton>
+              {likes[space.id]}
+            </div>
+          ) : (
+            <CircularProgress />
+          )}
         </div>
       </div>
 
@@ -188,7 +227,7 @@ export default function Modal({ open, setOpen, space }) {
       >
         <Alert severity="success" onClose={handleCloseSuccess}>
           {/* TODO: REPLACE BELOW */}
-          {liked ? "Liked" : "Unliked"}!
+          {!likeClicked[space.id] ? "Unliked" : "Liked"}!
         </Alert>
       </Snackbar>
     </div>

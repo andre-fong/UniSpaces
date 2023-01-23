@@ -3,6 +3,49 @@ import { generateHTTPRes } from "../../../../utils/generateHTTPRes";
 import { getSession } from "../../sessions";
 
 /**
+ * GET /spaces/{spaceId}/likes
+ *
+ * ***NOT DOCUMENTED***
+ */
+export async function getSpaceLiked(req) {
+  // Check if logged in
+  const session = await getSession(req);
+
+  if (session.status !== 200) {
+    return generateHTTPRes(401, "Not signed in", session.err);
+  }
+  const { user_id } = session.json;
+  const { spaceId } = req.query;
+
+  // // Check if space exists
+  // let space;
+  // try {
+  //   space = await getSQLData(
+  //     `SELECT space_id, BIN_TO_UUID(created_by) AS created_by FROM space WHERE space_id = ?`,
+  //     [spaceId]
+  //   );
+  // } catch (err) {
+  //   return generateHTTPRes(500, "Internal server error", err);
+  // }
+
+  // if (space.length === 0)
+  //   return generateHTTPRes(404, `Space not found with id ${spaceId}`);
+
+  // Check if user has already liked space
+  let like;
+  try {
+    like = await getSQLData(
+      `SELECT COUNT(*) AS count FROM liked_by WHERE space_id = ? AND user_id = UUID_TO_BIN(?)`,
+      [spaceId, user_id]
+    );
+  } catch (err) {
+    return generateHTTPRes(500, "Internal server error", err);
+  }
+  if (like[0].count) return generateHTTPRes(200, true);
+  return generateHTTPRes(200, false);
+}
+
+/**
  * POST /spaces/{spaceId}/likes
  *
  * https://app.swaggerhub.com/apis-docs/andre-fong/UniSpaces/1.0.0#/Space/addSpaceLike
@@ -106,7 +149,10 @@ export async function deleteSpaceLike(req) {
 }
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
+  if (req.method === "GET") {
+    const { status, json } = await getSpaceLiked(req);
+    res.status(status).json(json);
+  } else if (req.method === "POST") {
     const { status, json } = await addSpaceLike(req);
     res.status(status).json(json);
   } else if (req.method === "DELETE") {
