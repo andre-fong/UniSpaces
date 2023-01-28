@@ -5,7 +5,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 99999;
+  z-index: 99;
 
   display: flex;
   justify-content: center;
@@ -40,12 +40,16 @@
   }
 }
 
+.icons {
+  display: flex;
+  gap: 5px;
+}
+
 .content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 30px;
-  // overflow-x: auto;
 }
 
 .picture {

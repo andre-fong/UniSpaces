@@ -9,6 +9,7 @@ import { getSchools } from "../api/schools";
 import { getSQLData } from "../../utils/sqlQuery";
 import PaginationTab from "../../components/PaginationTab";
 import { useRouter } from "next/router";
+import NewSchoolCard from "../../components/NewSchoolCard";
 
 export default function Schools({ schools, error, query, count, page }) {
   // State managing search query
@@ -118,6 +119,7 @@ export default function Schools({ schools, error, query, count, page }) {
             schools.map((school) => (
               <SchoolCard key={school.id} school={school} />
             ))}
+          <NewSchoolCard />
         </div>
 
         <PaginationTab

@@ -14,6 +14,8 @@ import Alert from "@mui/material/Alert";
 import Link from "next/link";
 import { useSpaceLiked } from "../utils/useSpaceLiked";
 import CircularProgress from "@mui/material/CircularProgress";
+import EditIcon from "@mui/icons-material/Edit";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function Modal({ open, setOpen, space }) {
   const { tags, loading: tagsLoading } = useTags(space?.id);
@@ -23,9 +25,11 @@ export default function Modal({ open, setOpen, space }) {
   const { user, loading, error } = useUser();
   const { liked, loading: likedLoading } = useSpaceLiked(space?.id);
   const [likeClicked, setLikeClicked] = useState({});
-  console.log(likeClicked);
   const [likes, setLikes] = useState({});
-  console.log(likes);
+
+  const isCreator =
+    user?.user_id === creator?.user_id && !userLoading && !loading;
+  console.log(`isCreator: ${isCreator}`);
 
   // Update likes state when space changes
   useEffect(() => {
@@ -52,6 +56,8 @@ export default function Modal({ open, setOpen, space }) {
   const [success, setSuccess] = useState(false);
   const [notLogged, setNotLogged] = useState(false);
   const [internalError, setInternalError] = useState(false);
+
+  const [editing, setEditing] = useState(false);
 
   function checkIfParentElementClicked(e) {
     if (e.target !== e.currentTarget) return;
@@ -135,9 +141,23 @@ export default function Modal({ open, setOpen, space }) {
       >
         <div className={styles.top}>
           <h1 className={styles.name}>{space?.name}</h1>
-          <IconButton aria-label="close" onClick={() => setOpen(null)}>
-            <CloseIcon />
-          </IconButton>
+          <div className={styles.icons}>
+            {isCreator && (
+              <Tooltip
+                title="Edit space (only you can see this)"
+                onClick={() => setEditing(true)}
+              >
+                <IconButton aria-label="edit">
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Close">
+              <IconButton aria-label="close" onClick={() => setOpen(null)}>
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
 
         <div className={cardStyles.tags} style={{ marginBottom: 20 }}>
