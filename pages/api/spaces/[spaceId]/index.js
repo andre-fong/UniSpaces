@@ -79,14 +79,21 @@ export async function updateSpaceById(req) {
 
   const { name, description, img_id } = req.body;
 
+  if (name === undefined && description === undefined && img_id === undefined)
+    return generateHTTPRes(400, "No fields to update");
+
+  if (name === "") return generateHTTPRes(400, "New name cannot be empty");
+  if (name.length > 100)
+    return generateHTTPRes(400, "Name is at most 100 characters");
+
   let sql = `UPDATE space SET`;
   let queries = [];
 
-  if (name) {
+  if (name !== undefined) {
     sql += queries.length > 0 ? `, name = ?` : ` name = ?`;
     queries.push(name);
   }
-  if (description) {
+  if (description !== undefined) {
     sql += queries.length > 0 ? `, description = ?` : ` description = ?`;
     queries.push(description);
   }

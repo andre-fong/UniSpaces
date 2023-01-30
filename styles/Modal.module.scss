@@ -45,11 +45,17 @@
   gap: 5px;
 }
 
+.edit_buttons {
+  display: flex;
+  gap: 10px;
+}
+
 .content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 30px;
+  margin-bottom: 20px;
 }
 
 .picture {
@@ -63,7 +69,6 @@
   height: calc((50vw - 60px) * 0.6 * 10 / 16);
   overflow: auto;
   // word-break: break-word;
-  margin-bottom: 20px;
 }
 
 .likes {
