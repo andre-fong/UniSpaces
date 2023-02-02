@@ -473,6 +473,7 @@ export default function Modal({ open, setOpen, space }) {
           <TextField
             id="outlined-multiline-static"
             label="Description"
+            variant="standard"
             multiline
             rows={5}
             sx={{ flex: 4 }}

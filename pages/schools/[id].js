@@ -116,6 +116,6 @@ export async function getStaticProps({ params }) {
 
   return {
     props: { school: school, spaces: spaces },
-    revalidate: 10,
+    revalidate: 5,
   };
 }
