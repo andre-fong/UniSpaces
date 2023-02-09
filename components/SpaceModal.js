@@ -91,6 +91,8 @@ export default function Modal({ open, setOpen, space }) {
   const [success, setSuccess] = useState(false);
   const [notLogged, setNotLogged] = useState(false);
   const [internalError, setInternalError] = useState(false);
+  const [editError, setEditError] = useState(false);
+  const [editSuccess, setEditSuccess] = useState(false);
 
   function checkIfParentElementClicked(e) {
     if (e.target !== e.currentTarget) return;
@@ -123,6 +125,18 @@ export default function Modal({ open, setOpen, space }) {
       return;
     }
     setInternalError(false);
+  }
+  function handleCloseEditError(e, reason) {
+    if (reason === "clickaway") {
+      return;
+    }
+    setEditError(false);
+  }
+  function handleCloseEditSuccess(e, reason) {
+    if (reason === "clickaway") {
+      return;
+    }
+    setEditSuccess(false);
   }
 
   function handleLike() {
@@ -165,7 +179,8 @@ export default function Modal({ open, setOpen, space }) {
     setEditing(true);
   }
 
-  function handleEdit() {
+  function handleEdit(e) {
+    e.preventDefault();
     setSubmittingEdit(true);
 
     const newTagIDs = newTags.map((tag) => tag.id);
@@ -210,13 +225,19 @@ export default function Modal({ open, setOpen, space }) {
     Promise.all(promises)
       .then((responses) => {
         if (responses.some((res) => !res.ok)) {
-          throw new Error("Something went wrong");
+          throw new Error();
         }
 
         // Success editing
-        router.reload();
+        setEditSuccess(true);
+        setTimeout(() => {
+          router.reload();
+        }, 2000);
       })
-      .catch((err) => console.error(err));
+      .catch(() => {
+        setEditError(true);
+        setSubmittingEdit(false);
+      });
   }
 
   const signinButton = (
@@ -363,166 +384,153 @@ export default function Modal({ open, setOpen, space }) {
         className={styles.modal}
         style={{ visibility: open ? "visible" : "hidden" }}
       >
-        <div className={styles.top}>
-          {/* <h1 className={styles.name}>{space?.name}</h1> */}
-          <TextField
-            label="Name"
-            variant="standard"
-            size="medium"
-            InputProps={{
-              style: { fontSize: "1.5em", fontWeight: "bold" },
-              readOnly: submittingEdit,
-            }}
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-
-          <div className={styles.icons}>
-            {/* {isCreator && (
-              <Tooltip
-                title="Edit space (only you can see this)"
-                onClick={() => setEditing(false)}
-              >
-                <IconButton aria-label="edit">
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            )} */}
-            <ThemeProvider theme={theme}>
-              <div className={styles.edit_buttons}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  color="primary"
-                  disabled={submittingEdit}
-                  onClick={() => setEditing(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  disabled={submittingEdit}
-                  onClick={() => handleEdit()}
-                >
-                  Save
-                </Button>
-              </div>
-            </ThemeProvider>
-          </div>
-        </div>
-
-        {/* <div className={cardStyles.tags} style={{ marginBottom: 20 }}>
-          {!tagsLoading && tags?.map((tag) => <Tag key={tag.id} tag={tag} />)}
-        </div> */}
-        <Autocomplete
-          multiple
-          options={allTags || []}
-          loading={allTagsLoading}
-          getOptionLabel={(tag) => tag.name}
-          value={newTags}
-          onChange={(event, newValue) => {
-            setNewTags(newValue);
-          }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          filterSelectedOptions
-          readOnly={submittingEdit}
-          renderInput={(params) => (
-            <TextField {...params} variant="standard" label="Tags" />
-          )}
-          renderTags={(tags, getTagProps) =>
-            tags.map((tag, index) => (
-              <Chip
-                variant="outlined"
-                label={tag.name}
-                key={tag.id}
-                // deleteIcon={<CloseIcon />}
-                sx={{
-                  backgroundColor: tag.color || "rgb(0, 0, 84)",
-                  color: "white",
-                  "& .MuiChip-deleteIcon": {
-                    color: "white",
-                  },
-                  "& .MuiChip-deleteIcon:hover": {
-                    color: "lightgray",
-                  },
-                  fontWeight: 600,
-                }}
-                deleteIcon={<CloseIcon />}
-                {...getTagProps({ index })}
-              />
-            ))
-          }
-          sx={{ marginBottom: "25px" }}
-        />
-
-        <div className={styles.content}>
-          <div className={styles.picture}>
-            <a href={space?.img || "/defaultSpace.jpg"}>
-              <Image
-                src={space?.img || "/defaultSpace.jpg"}
-                alt={space?.name || "No image provided"}
-                fill
-              />
-            </a>
-          </div>
-          {/* <div className={styles.description}>
-            {space?.description || "No description provided"}
-          </div> */}
-          <TextField
-            id="outlined-multiline-static"
-            label="Description"
-            variant="standard"
-            multiline
-            rows={5}
-            sx={{ flex: 4 }}
-            value={newDesc}
-            InputProps={{
-              readOnly: submittingEdit,
-            }}
-            onChange={(e) => setNewDesc(e.target.value)}
-          />
-        </div>
-
-        <div className={cardStyles.bottom}>
-          <div className={cardStyles.user}>
-            <div className={cardStyles.profile_picture}>
-              <Image
-                src={creator?.img ? creator.img : "/defaultUser.webp"}
-                alt={
-                  creator
-                    ? `${creator.username}'s Profile`
-                    : "No profile provided"
-                }
-                width={30}
-                height={30}
-              />
-            </div>
-
-            <p className={cardStyles.username}>{creator?.username || ""}</p>
-          </div>
-
-          {!likedLoading ? (
-            <div
-              className={`${styles.likes} ${cardStyles.likes}`}
-              style={{
-                color: likeClicked[space.id] ? "rgb(255, 77, 77)" : "black",
+        <form onSubmit={handleEdit}>
+          <div className={styles.top}>
+            {/* <h1 className={styles.name}>{space?.name}</h1> */}
+            <TextField
+              label="Name"
+              variant="standard"
+              size="medium"
+              InputProps={{
+                style: { fontSize: "1.5em", fontWeight: "bold" },
+                readOnly: submittingEdit,
               }}
-            >
-              <IconButton
-                onClick={handleLike}
-                sx={{ color: "inherit" }}
-                aria-label="like"
-              >
-                <ThumbUpIcon />
-              </IconButton>
-              {likes[space.id]}
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              required
+            />
+
+            <div className={styles.icons}>
+              <ThemeProvider theme={theme}>
+                <div className={styles.edit_buttons}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="primary"
+                    disabled={submittingEdit}
+                    onClick={() => setEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    type="submit"
+                    disabled={submittingEdit}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </ThemeProvider>
             </div>
-          ) : (
-            <CircularProgress />
-          )}
-        </div>
+          </div>
+
+          <Autocomplete
+            multiple
+            options={allTags || []}
+            loading={allTagsLoading}
+            getOptionLabel={(tag) => tag.name}
+            value={newTags}
+            onChange={(event, newValue) => {
+              setNewTags(newValue);
+            }}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            filterSelectedOptions
+            readOnly={submittingEdit}
+            renderInput={(params) => (
+              <TextField {...params} variant="standard" label="Tags" />
+            )}
+            renderTags={(tags, getTagProps) =>
+              tags.map((tag, index) => (
+                <Chip
+                  variant="outlined"
+                  label={tag.name}
+                  key={tag.id}
+                  sx={{
+                    backgroundColor: tag.color || "rgb(0, 0, 84)",
+                    color: "white",
+                    "& .MuiChip-deleteIcon": {
+                      color: "white",
+                    },
+                    "& .MuiChip-deleteIcon:hover": {
+                      color: "lightgray",
+                    },
+                    fontWeight: 600,
+                  }}
+                  deleteIcon={<CloseIcon />}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }
+            sx={{ marginBottom: "25px" }}
+          />
+
+          <div className={styles.content}>
+            <div className={styles.picture}>
+              <a href={space?.img || "/defaultSpace.jpg"}>
+                <Image
+                  src={space?.img || "/defaultSpace.jpg"}
+                  alt={space?.name || "No image provided"}
+                  fill
+                />
+              </a>
+            </div>
+
+            <TextField
+              id="outlined-multiline-static"
+              label="Description"
+              variant="standard"
+              multiline
+              rows={5}
+              sx={{ flex: 4 }}
+              value={newDesc}
+              InputProps={{
+                readOnly: submittingEdit,
+              }}
+              onChange={(e) => setNewDesc(e.target.value)}
+            />
+          </div>
+
+          <div className={cardStyles.bottom}>
+            <div className={cardStyles.user}>
+              <div className={cardStyles.profile_picture}>
+                <Image
+                  src={creator?.img ? creator.img : "/defaultUser.webp"}
+                  alt={
+                    creator
+                      ? `${creator.username}'s Profile`
+                      : "No profile provided"
+                  }
+                  width={30}
+                  height={30}
+                />
+              </div>
+
+              <p className={cardStyles.username}>{creator?.username || ""}</p>
+            </div>
+
+            {!likedLoading ? (
+              <div
+                className={`${styles.likes} ${cardStyles.likes}`}
+                style={{
+                  color: likeClicked[space.id] ? "rgb(255, 77, 77)" : "black",
+                }}
+              >
+                <IconButton
+                  onClick={handleLike}
+                  sx={{ color: "inherit" }}
+                  aria-label="like"
+                >
+                  <ThumbUpIcon />
+                </IconButton>
+                {likes[space.id]}
+              </div>
+            ) : (
+              <CircularProgress />
+            )}
+          </div>
+        </form>
       </div>
 
       <Snackbar
@@ -551,8 +559,27 @@ export default function Modal({ open, setOpen, space }) {
         onClose={handleCloseSuccess}
       >
         <Alert severity="success" onClose={handleCloseSuccess}>
-          {/* TODO: REPLACE BELOW */}
           {!likeClicked[space?.id] ? "Unliked" : "Liked"}!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={editError}
+        autoHideDuration={5000}
+        onClose={handleCloseEditError}
+      >
+        <Alert severity="error" onClose={handleCloseEditError}>
+          Error editing space!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={editSuccess}
+        autoHideDuration={3000}
+        onClose={handleCloseEditSuccess}
+      >
+        <Alert severity="success" onClose={handleCloseEditSuccess}>
+          Changes saved successfully! Reloading...
         </Alert>
       </Snackbar>
     </div>
