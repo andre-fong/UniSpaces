@@ -4,6 +4,7 @@ import styles from "../styles/Card.module.scss";
 import { useUserFetching } from "../utils/useUserFetching";
 import { useTags } from "../utils/useTags";
 import Tag from "./Tag";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function SpaceCard({ space, onClick }) {
   const { tags, loading: tagsLoading } = useTags(space.id);
@@ -25,8 +26,15 @@ export default function SpaceCard({ space, onClick }) {
           <div className={styles.top}>
             <h2 className={styles.name}>{space.name}</h2>
             <div className={styles.tags}>
-              {!tagsLoading &&
-                tags?.map((tag) => <Tag key={tag.id} tag={tag} />)}
+              {/* {!tagsLoading &&
+                tags?.map((tag) => <Tag key={tag.id} tag={tag} />)} */}
+              {tagsLoading ? (
+                <Skeleton variant="rounded">
+                  <Tag tag={{ name: "Loading..." }} />
+                </Skeleton>
+              ) : (
+                tags?.map((tag) => <Tag key={tag.id} tag={tag} />)
+              )}
             </div>
             <p className={styles.description}>
               {space.description || "No description provided"}
@@ -35,17 +43,27 @@ export default function SpaceCard({ space, onClick }) {
           <div className={styles.bottom}>
             <div className={styles.user}>
               <div className={styles.profile_picture}>
-                <Image
-                  src={user?.img ? user.img : "/defaultUser.webp"}
-                  alt={
-                    user ? `${user?.username}'s Profile` : "No profile provided"
-                  }
-                  width={30}
-                  height={30}
-                />
+                {userLoading ? (
+                  <Skeleton variant="circular" width={30} height={30} />
+                ) : (
+                  <Image
+                    src={user?.img ? user.img : "/defaultUser.webp"}
+                    alt={
+                      user
+                        ? `${user?.username}'s Profile`
+                        : "No profile provided"
+                    }
+                    width={30}
+                    height={30}
+                  />
+                )}
               </div>
 
-              <p className={styles.username}>{user?.username || ""}</p>
+              {userLoading ? (
+                <Skeleton variant="text" width={80} />
+              ) : (
+                <p className={styles.username}>{user?.username || ""}</p>
+              )}
             </div>
             <div className={styles.likes}>
               <Image
