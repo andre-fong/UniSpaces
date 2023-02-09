@@ -106,7 +106,6 @@ export default function NewSchool() {
       setToastError(json.message);
       return;
     } else {
-      setIsSubmitting(false);
       setToastSuccess(true);
 
       setTimeout(() => {
