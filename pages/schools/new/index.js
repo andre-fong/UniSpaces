@@ -286,7 +286,7 @@ Strengths? Notorieties?`}
       style={{ transitionDelay: "100ms", transitionDuration: "0.4s" }}
     >
       <div className={styles.form}>
-        <h2>School Details: </h2>
+        <h2>Review Your Details: </h2>
 
         <FormControl
           sx={{ m: 2, width: "300px" }}
