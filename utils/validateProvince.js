@@ -4,21 +4,21 @@
  * @returns True if valid, false if not
  */
 export function isProvince(str) {
-  const provinces = [
-    "NL",
-    "PE",
-    "NS",
-    "NB",
-    "QC",
-    "ON",
-    "MB",
-    "SK",
-    "AB",
-    "BC",
-    "YT",
-    "NT",
-    "NU",
-  ];
-
   return provinces.includes(str);
 }
+
+export const provinces = [
+  "NL",
+  "PE",
+  "NS",
+  "NB",
+  "QC",
+  "ON",
+  "MB",
+  "SK",
+  "AB",
+  "BC",
+  "YT",
+  "NT",
+  "NU",
+];
