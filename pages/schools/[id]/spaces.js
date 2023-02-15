@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { getSQLData } from "../../utils/sqlQuery";
-import { getSchoolById } from "../api/schools/[schoolId]";
-import { getSpaces } from "../api/spaces";
-import styles from "../../styles/SchoolPage.module.scss";
+import { getSQLData } from "../../../utils/sqlQuery";
+import { getSchoolById } from "../../api/schools/[schoolId]";
+import { getSpaces } from "../../api/spaces";
+import styles from "../../../styles/SchoolPage.module.scss";
 import Head from "next/head";
 import Image from "next/image";
-import SpaceCard from "../../components/SpaceCard";
-import SpaceModal from "../../components/SpaceModal";
+import SpaceCard from "../../../components/SpaceCard";
+import SpaceModal from "../../../components/SpaceModal";
 
 export default function SchoolSpaces({ school, spaces }) {
   // Space number open in modal
